@@ -1,14 +1,22 @@
 $(document).ready(function() {
-	$('header').prepend(frappe.render_template("logo"));
-	$('header .navbar .container').prepend(frappe.render_template("sidebar-toggle"));
-	$('.main-section').append(frappe.render_template("main-sidebar"));
 
-	$('header').addClass('main-header');
-	$('header .navbar').removeClass('navbar-fixed-top');
-	$('body').addClass('skin-blue sidebar-mini sidebar-collapse');	
-	$('#body_div').addClass('content-wrapper');	
+	$.get("api/method/frappe.desk.moduleview.get_desktop_settings", function(data, status){
+		console.log(data.message);
+		$('header').prepend(frappe.render_template("logo"));
+		$('header .navbar .container').prepend(frappe.render_template("sidebar-toggle"));
+		$('.main-section').append(frappe.render_template("main-sidebar", {
+			data: data.message
+		}));
+
+		$('header').addClass('main-header');
+		$('header .navbar').removeClass('navbar-fixed-top');
+		$('body').addClass('skin-blue sidebar-mini sidebar-collapse');	
+		$('#body_div').addClass('content-wrapper');	
+		
+		bdtheme.set_user_background();
+	});
+
 	
-	bdtheme.set_user_background();
 	
 });
 
@@ -20,6 +28,9 @@ $(document).bind('toolbar_setup', function() {
 	$('.navbar-home').html(frappe._('Home'));
 
 });
+// customize script:
+// console.log(frappe.get_doc(doctype='Product'));
+
 
 bdtheme.set_user_background = function(src, selector, style){
 	if(!selector) selector = "#page-desktop";
@@ -43,11 +54,14 @@ bdtheme.set_user_background = function(src, selector, style){
 	}));
 }
 
-frappe.templates["logo"] = '<a href="/desk" class="logo">'
-+     ' <span class="logo-mini"><b>bd</b></span>'
-+'      <span class="logo-lg"><b>bdoop</b></span>'
+frappe.templates["logo"] = '<a href="/desk" class="navbar-brand nuxt-link-exact-active hide-on-small" target="_self">'
++     '<div class="logo-container"><img src="/assets/bdtheme/images/tireboss-logo.png" height="35" alt="Frontech Solution" class="navbar-brand-full"> '
++	'<div class="logo-version">V1.14</div></div>'
 +'    </a>';
+
 
 frappe.templates["sidebar-toggle"] = '<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">'
 +	        '<span class="sr-only">Toggle navigation</span>'
 +	    '</a>';
+
+
